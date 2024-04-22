@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	sqladmin "google.golang.org/api/sqladmin/v1beta4"
 )
 
@@ -23,8 +25,13 @@ func deleteSQLInstance(ctx context.Context, projectID, instanceID string) error 
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+	projectID := os.Getenv("PROJECT_ID")
+	instanceID := os.Getenv("INSTANCE_ID")
 	ctx := context.Background()
-	if err := deleteSQLInstance(ctx, "sound-habitat-418811", "mysql"); err != nil {
+	if err := deleteSQLInstance(ctx, projectID, instanceID); err != nil {
 		log.Fatal(err)
 	}
 }

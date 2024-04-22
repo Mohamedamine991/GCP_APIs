@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"cloud.google.com/go/storage"
+	"github.com/joho/godotenv"
 )
 
 func deleteStorageBucket(ctx context.Context, bucketName string) error {
@@ -24,8 +26,12 @@ func deleteStorageBucket(ctx context.Context, bucketName string) error {
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
 	ctx := context.Background()
-	if err := deleteStorageBucket(ctx, "stal02"); err != nil {
+	bucketID := os.Getenv("BUCKET_ID")
+	if err := deleteStorageBucket(ctx, bucketID); err != nil {
 		log.Fatal(err)
 	}
 }

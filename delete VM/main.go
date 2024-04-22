@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	compute "cloud.google.com/go/compute/apiv1"
+	"github.com/joho/godotenv"
 	computepb "google.golang.org/genproto/googleapis/cloud/compute/v1"
 )
 
@@ -32,8 +34,14 @@ func deleteComputeInstance(ctx context.Context, projectID, zone, instanceName st
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+	projectID := os.Getenv("PROJECT_ID")
+	zone := os.Getenv("ZONE")
+	instanceName := os.Getenv("INSTANCE_NAME")
 	ctx := context.Background()
-	if err := deleteComputeInstance(ctx, "sound-habitat-418811", "northamerica-northeast2-a", "amine"); err != nil {
+	if err := deleteComputeInstance(ctx, projectID, zone, instanceName); err != nil {
 		log.Fatal(err)
 	}
 }

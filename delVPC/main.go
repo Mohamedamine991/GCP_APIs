@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	compute "cloud.google.com/go/compute/apiv1"
+	"github.com/joho/godotenv"
 	computepb "google.golang.org/genproto/googleapis/cloud/compute/v1"
 )
 
@@ -32,9 +34,12 @@ func deleteVPCNetwork(ctx context.Context, projectID, networkName string) error 
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
 	ctx := context.Background()
-	projectID := "sound-habitat-418811" // Replace with your GCP project ID
-	networkName := "mynetwork"          // Replace with the name of the VPC network you want to delete
+	projectID := os.Getenv("PROJECT_ID")
+	networkName := os.Getenv("NETWORK_NAME") // Replace with the name of the VPC network you want to delete
 
 	if err := deleteVPCNetwork(ctx, projectID, networkName); err != nil {
 		log.Fatal(err)
